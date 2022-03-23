@@ -1,0 +1,39 @@
+version: '3.7'
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:5.4.2
+    container_name: zookeeper
+    environment:
+      - ZOOKEEPER_CLIENT_PORT=2181
+  kafka:
+    image: confluentinc/cp-kafka:5.4.2
+    container_name: kafka
+    ports:
+      - 9092:9092
+    depends_on:
+      - zookeeper
+    environment:
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:29092,PLAINTEXT_HOST://kafka:9092
+      - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      - KAFKA_INTER_BROKER_LISTENER_NAME=PLAINTEXT
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+      - KAFKA_AUTO_CREATE_TOPICS_ENABLE=true
+  kafka-generator:
+    build: ./data-generator
+    image: data-generator:latest
+    container_name: kafka-generator
+    depends_on:
+      - kafka
+    env_file:
+      - ./data-generator/.env
+  kafka-consumer:
+    build: ./data-consumer
+    image: data-consumer:latest
+    container_name: kafka-consumer
+    depends_on:
+      - kafka-generator
+    env_file:
+      - ./data-consumer/.env
+    volumes:
+      - ${PWD}/data-consumer/python_logs:/home/appuser/python_logs/
