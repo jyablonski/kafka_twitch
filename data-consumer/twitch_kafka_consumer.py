@@ -73,7 +73,7 @@ logging.info('STARTING TWITCH KAFKA CONSUMER')
 consumer = Consumer({
         'bootstrap.servers': 'kafka:9092',
         'group.id': 'jacobsgroup',
-        'auto.offset.reset': 'earliest',
+        'auto.offset.reset': 'earliest', # can change this to latest as well
         'session.timeout.ms': 20000
 })
 
@@ -88,6 +88,7 @@ end_time = datetime.now() + timedelta(minutes=1)
 logging.info(f"Current Time is {datetime.now()}, End time is {end_time} (60 s)")
 
 while True:
+    # check every 1 second for new messages in the topic
     msg = consumer.poll(1.0)
     current_time = datetime.now()
 
