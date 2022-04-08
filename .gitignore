@@ -1,6 +1,7 @@
 .DS_Store
 .env
 *.env
+**.ipynb
 .log
 **.log
 **./log
@@ -8,3 +9,4 @@
 jacobs_notes.md
 prac.ipynb
 data-generator/extra_notes.md
+pyspark_logs/
