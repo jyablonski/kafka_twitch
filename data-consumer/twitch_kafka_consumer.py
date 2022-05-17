@@ -104,7 +104,7 @@ while True:
     kafka_data.append(msg_clean)
 
     if current_time > end_time:
-        print(f"Proccessed {len(kafka_data)} total messages after 60 seconds")
+        logging.info(f"Proccessed {len(kafka_data)}")
         kafka_df = pd.DataFrame(kafka_data)
         write_to_sql(conn, kafka_df, "append")
         logging.info('FINISHING TWITCH KAFKA CONSUMER')

@@ -24,10 +24,25 @@ df = spark \
     .option("startingOffsets", "earliest") \
     .load()
 
-query = df.selectExpr("CAST(key AS STRING)", "CAST(value AS STRING)") \
-    .writeStream \
-    .format("console") \
-    .option("checkpointLocation", "pyspark_logs/") \
-    .start()
+# ("CAST(user_name AS STRING)", "CAST(game_name AS STRING)", "CAST(viewer_count AS INT)", "CAST(started_at AS TIMESTAMP)")
+#     # .trigger(Trigger.ProcessingTime("1 minute"))
+# query = df.selectExpr("CAST(key AS STRING)", "CAST(value AS STRING)") \
+#     .writeStream \
+#     .format("console") \
+#     .option("checkpointLocation", "pyspark_logs/") \
+#     .start()
 
-query.awaitTermination()
+# query.awaitTermination()
+
+# query = df.writeStream \
+#     .format("console")  \
+#     .foreachBatch(func_call) \
+#     .option("checkpointLocation","pyspark_logs/") \
+#     .trigger(processingTime="1 minute") \
+#     .start().awaitTermination()
+
+query = df.writeStream \
+    .format("console")  \
+    .option("checkpointLocation","logs/") \
+    .trigger(processingTime="1 minute") \
+    .start().awaitTermination()
